@@ -1,9 +1,9 @@
 import { Laptop } from '@sd/assets/icons';
 import { useMemo } from 'react';
 import { useBridgeQuery, useLibraryQuery } from '@sd/client';
-
 import { NodeIdParamsSchema } from '~/app/route-schemas';
 import { useZodRouteParams } from '~/hooks';
+
 import Explorer from '../Explorer';
 import { ExplorerContextProvider } from '../Explorer/Context';
 import { createDefaultExplorerSettings } from '../Explorer/store';
@@ -37,7 +37,8 @@ export const Component = () => {
 					node: nodeState.data
 			  }
 			: undefined,
-		settings: explorerSettings
+		settings: explorerSettings,
+		showPathBar: false
 	});
 
 	return (

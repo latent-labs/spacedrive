@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { stringify } from 'uuid';
@@ -11,12 +10,13 @@ import {
 	useLibraryContext,
 	useLibraryMutation,
 	useLibraryQuery,
-	useLibrarySubscription
+	useLibrarySubscription,
+	useRspcLibraryContext
 } from '@sd/client';
-
 import { LocationIdParamsSchema } from '~/app/route-schemas';
 import { Folder } from '~/components';
 import { useKeyDeleteFile, useZodRouteParams } from '~/hooks';
+
 import Explorer from '../Explorer';
 import { ExplorerContextProvider } from '../Explorer/Context';
 import { usePathsInfiniteQuery } from '../Explorer/queries';
@@ -29,9 +29,9 @@ import LocationOptions from './LocationOptions';
 
 export const Component = () => {
 	const [{ path }] = useExplorerSearchParams();
-	const queryClient = useQueryClient();
 	const { id: locationId } = useZodRouteParams(LocationIdParamsSchema);
 	const location = useLibraryQuery(['locations.get', locationId]);
+	const rspc = useRspcLibraryContext();
 
 	const preferences = useLibraryQuery(['preferences.get']);
 	const updatePreferences = useLibraryMutation('preferences.update');
@@ -64,7 +64,7 @@ export const Component = () => {
 				await updatePreferences.mutateAsync({
 					location: { [pubId]: { explorer: settings } }
 				});
-				queryClient.invalidateQueries(['preferences.get']);
+				rspc.queryClient.invalidateQueries(['preferences.get']);
 			} catch (e) {
 				alert('An error has occurred while updating your preferences.');
 			}
@@ -150,7 +150,10 @@ const useItems = ({
 			: { path: path ?? '' })
 	};
 
-	const count = useLibraryQuery(['search.pathsCount', { filter }]);
+	const count = useLibraryQuery([
+		'search.pathsCount',
+		{ filter: { ...filter, hidden: explorerSettings.showHiddenFiles ? undefined : false } }
+	]);
 
 	const query = usePathsInfiniteQuery({
 		arg: { filter, take },

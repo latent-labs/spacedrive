@@ -1,9 +1,9 @@
 import { getIcon, iconNames } from '@sd/assets/util';
 import { useMemo } from 'react';
 import { ObjectOrder, useLibraryQuery } from '@sd/client';
-
 import { LocationIdParamsSchema } from '~/app/route-schemas';
 import { useZodRouteParams } from '~/hooks';
+
 import Explorer from '../Explorer';
 import { ExplorerContextProvider } from '../Explorer/Context';
 import { createDefaultExplorerSettings, objectOrderingKeysSchema } from '../Explorer/store';
@@ -42,7 +42,8 @@ export const Component = () => {
 		settings: explorerSettings,
 		...(tag.data && {
 			parent: { type: 'Tag', tag: tag.data }
-		})
+		}),
+		showPathBar: false
 	});
 
 	return (
@@ -51,6 +52,7 @@ export const Component = () => {
 			<Explorer
 				emptyNotice={
 					<EmptyNotice
+						loading={explorerData.isFetching}
 						icon={<img className="h-32 w-32" src={getIcon(iconNames.Tags)} />}
 						message="No items assigned to this tag."
 					/>

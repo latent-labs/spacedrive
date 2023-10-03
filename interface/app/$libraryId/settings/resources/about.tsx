@@ -1,9 +1,8 @@
+import { Globe } from '@phosphor-icons/react';
 import { AppLogo } from '@sd/assets/images';
 import { Discord, Github } from '@sd/assets/svgs/brands';
-import { Globe } from '@phosphor-icons/react';
 import { useBridgeQuery, useDebugStateEnabler } from '@sd/client';
 import { Button, Divider } from '@sd/ui';
-
 import { useOperatingSystem } from '~/hooks/useOperatingSystem';
 import { usePlatform } from '~/util/Platform';
 
@@ -82,7 +81,7 @@ export const Component = () => {
 				</p>
 			</div>
 			<Divider />
-			<div className="mb-20">
+			<div>
 				<h1 className="my-5 text-lg font-bold text-ink">
 					We also would like to thank all our contributors
 				</h1>

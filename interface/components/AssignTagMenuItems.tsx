@@ -2,20 +2,26 @@ import { Plus } from '@phosphor-icons/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import clsx from 'clsx';
 import { useRef } from 'react';
-import { Object, useLibraryMutation, useLibraryQuery, usePlausibleEvent } from '@sd/client';
+import {
+	Object,
+	useLibraryMutation,
+	useLibraryQuery,
+	usePlausibleEvent,
+	useRspcLibraryContext
+} from '@sd/client';
 import { dialogManager, ModifierKeys } from '@sd/ui';
-
 import CreateDialog from '~/app/$libraryId/settings/library/tags/CreateDialog';
 import { useOperatingSystem } from '~/hooks';
 import { useScrolled } from '~/hooks/useScrolled';
 import { keybindForOs } from '~/util/keybinds';
+
 import { Menu } from './Menu';
 
 export default (props: { objects: Object[] }) => {
 	const os = useOperatingSystem();
 	const keybind = keybindForOs(os);
 	const submitPlausibleEvent = usePlausibleEvent();
-
+	const rspc = useRspcLibraryContext();
 	const tags = useLibraryQuery(['tags.list'], { suspense: true });
 	// Map<tag::id, Vec<object::id>>
 	const tagsWithObjects = useLibraryQuery([
@@ -42,6 +48,7 @@ export default (props: { objects: Object[] }) => {
 	return (
 		<>
 			<Menu.Item
+				className="tag-menu"
 				label="New tag"
 				icon={Plus}
 				iconProps={{ size: 15 }}
@@ -110,6 +117,8 @@ export default (props: { objects: Object[] }) => {
 														)
 														.map((o) => o.id)
 										});
+										if (unassign)
+											rspc.queryClient.invalidateQueries(['search.objects']);
 									}}
 								>
 									<div
